@@ -7,8 +7,6 @@ function setup() {
 }
 
 function initfield(size_x, size_y) {
-  console.log(size_y / 2);
-  console.log(Math.round(size_y / 2))
   var field = [];
   for (x = 0; x < size_x; x++) {
     var column = [];
@@ -34,20 +32,44 @@ function initfield(size_x, size_y) {
     }
     field.push(column);
   }
+  // now let's remove those ugly "peaks"
+  for (x = 0; x < size_x; x++) {
+    if (x != 0 && x != size_x - 1) {
+      for (y = 0; y < size_y; y++) {
+        if (y < size_y - 2 && field[x][y] == 1) {
+          if (field[x - 1][y + 1] == 0 && field[x + 1][y + 1] == 0) {
+            field[x][y] = 0;
+            field[x][y + 1] = 0;
+          }
+        }
+      }
+    }
+  }
   return field;
 }
 
 function drawfield(field) {
-  for (row = 0; row < field.length; row++) {
-    for (block = 0; block < field[row].length; block++) {
-      if (field[row][block] == 0) {
+  for (column = 0; column < field.length; column++) {
+    for (y = 0; y < field[column].length; y++) {
+      if (field[column][y] == 0) {
         fill(65, 200, 240);
       }
 
-      else if (field[row][block] == 1) {
-        fill(70, 40, 20);
+      else if (field[column][y] == 1) {
+        // if it's ground, check if it's near the air. If it is, it should
+        // become grass (because hell yeah realism!!)
+        if (y > 1 && field[column][y - 1] == 0) {
+        fill(25, 125, 25);
+        } else if (column != 0 && field[column - 1][y] == 0) {
+          fill(25, 125, 25);
+        } else if (column != size_x - 1 && field[column + 1][y] == 0) {
+          fill(25, 125, 25);
+        } else {
+        // otherwise, make it brown
+          fill(map(y, 0, size_y, 70, 20), map(y, 0, size_y, 40, 10), 10);
+        }
       }
-      rect(row * blocksize, block * blocksize, blocksize, blocksize);
+      rect(column * blocksize, y * blocksize, blocksize, blocksize);
     }
   }
 }
