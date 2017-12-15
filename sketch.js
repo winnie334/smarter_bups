@@ -1,9 +1,15 @@
+var field = [];
+var size_x = 80;
+var size_y = 50;
+
 function setup() {
-  createCanvas(1400, 800);
-  frameRate(5);
-  size_x = 120; size_y = 60
-  field = initfield(size_x, size_y);
+  createCanvas(1400, 700);
+  frameRate(60);
+  bup = new Bup(1);
+  initfield(size_x, size_y);
   blocksize = Math.min(height / size_y, width / size_x);
+  spawning = 0;  // indicates whether we're currently spawning a new bup
+  spawningdir = 1;
 }
 
 function initfield(size_x, size_y) {
@@ -11,7 +17,6 @@ function initfield(size_x, size_y) {
   // 0 is air;
   // 1 is ground;
   // 2 is grass
-  var field = [];
   for (x = 0; x < size_x; x++) {
     var column = [];
     for (y = 0; y < size_y; y++) {
@@ -40,14 +45,13 @@ function initfield(size_x, size_y) {
     field.push(column);
   }
   for (i = 0; i < 5; i++) {
-    field = removepeaks(field);
-    field = removecorners(field);
+    removepeaks();
+    removecorners();
   }
-  field = grassify(field);
-  return field;
+  grassify();
 }
 
-function removecorners(field) {
+function removecorners() {
   // let's remove those straight corners!
   for (x = 0; x < size_x; x++) {
     if (x != 0 && x != size_x - 1) {
@@ -64,30 +68,26 @@ function removecorners(field) {
       }
     }
   }
-  return field;
 }
 
-function removepeaks(field) {
+function removepeaks() {
   // now let's remove those ugly "peaks"
   // the reason why we do this entire loop p times is to kill all peaks, not
   // just the ones of height 1
-  for (p = 0; p < 2; p++) {
-    for (x = 0; x < size_x; x++) {
-      if (x != 0 && x != size_x - 1) {
-        for (y = 0; y < size_y; y++) {
-          if (y < size_y - 1 && field[x][y] == 1) {
-            if (field[x - 1][y] == 0 && field[x + 1][y] == 0) {
-              field[x][y] = 0;
-            }
+  for (x = 0; x < size_x; x++) {
+    if (x != 0 && x != size_x - 1) {
+      for (y = 0; y < size_y; y++) {
+        if (y < size_y - 1 && field[x][y] == 1) {
+          if (field[x - 1][y] == 0 && field[x + 1][y] == 0) {
+            field[x][y] = 0;
           }
         }
       }
     }
   }
-  return field;
 }
 
-function grassify(field) {
+function grassify() {
   // converts certain ground pieces (1) to grass (2)
   for (column = 0; column < field.length; column++) {
     for (y = 0; y < field[column].length; y++) {
@@ -103,10 +103,9 @@ function grassify(field) {
       }
     }
   }
-  return field;
 }
 
-function drawfield(field) {
+function drawfield() {
   // converts the matrix into a terrain visible for humans
   for (column = 0; column < field.length; column++) {
     for (y = 0; y < field[column].length; y++) {
@@ -115,17 +114,24 @@ function drawfield(field) {
       }
       else if (field[column][y] == 1) {
           fill(map(y, 0, size_y, 70, 20), map(y, 0, size_y, 40, 10), 10);
-        }
+      }
       else if (field[column][y] == 2) {
         fill(25, 125, 25);
+      }
+      else if (field[column][y] == 3) {
+        fill(240, 85, 100, 150);
+      }
+      else if (field[column][y] == 4) {
+        fill(65, 111, 240, 500);
       }
       rect(column * blocksize, y * blocksize, blocksize, blocksize);
     }
   }
 }
 
-
 function draw() {
   strokeWeight(0);
-  drawfield(field);
+  drawfield();
+  bup.update();
+
 }
