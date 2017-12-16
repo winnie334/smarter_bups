@@ -4,8 +4,9 @@ var size_y = 50;
 
 function setup() {
   createCanvas(1400, 700);
-  frameRate(60);
-  bup = new Bup(1);
+  strokeWeight(0);
+  frameRate(15);
+  bup = new Bup(0);
   initfield(size_x, size_y);
   blocksize = Math.min(height / size_y, width / size_x);
   spawning = 0;  // indicates whether we're currently spawning a new bup
@@ -17,6 +18,8 @@ function initfield(size_x, size_y) {
   // 0 is air;
   // 1 is ground;
   // 2 is grass
+  // 3 and 4 is red and blue beam
+  // 5 and 6 is red and blue bup
   for (x = 0; x < size_x; x++) {
     var column = [];
     for (y = 0; y < size_y; y++) {
@@ -124,14 +127,22 @@ function drawfield() {
       else if (field[column][y] == 4) {
         fill(65, 111, 240, 500);
       }
+      else if (field[column][y] == 5) {
+        fill(240, 85, 100);
+      }
+      else if (field[column][y] == 6) {
+        fill(65, 111, 240);
+      }
       rect(column * blocksize, y * blocksize, blocksize, blocksize);
     }
   }
 }
 
 function draw() {
-  strokeWeight(0);
   drawfield();
   bup.update();
+}
 
+function mousePressed() {
+  bup.jump(-2, -2);
 }
