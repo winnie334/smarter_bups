@@ -4,7 +4,7 @@ function Bup(team) {
   this.pos = createVector(team * size_x, 1);
   this.vel = createVector();
   this.acc = createVector();
-  this.gravity = createVector(0, 0.2);
+  this.gravity = createVector(0, 0.05);
   let precision = 10;
 
   this.spawnanimation = function() {
@@ -14,6 +14,7 @@ function Bup(team) {
       for (y = 0; y < size_y; y++) {
         if (field[this.pos.x][y] == 3 + team) {
           field[this.pos.x][y] = 0;
+          update_blocks.push([this.pos.x, y]);
         }
       }
       this.hasspawned = 1;
@@ -21,11 +22,13 @@ function Bup(team) {
       for (y = 0; y < size_y; y++) {
         if (field[this.pos.x][y] == 0) {
           field[this.pos.x][y] = 3 + team;
+          update_blocks.push([this.pos.x, y]);
         }
 
         if (this.pos.x > -1 && this.pos.x < size_x + this.spawndir) {
           if (field[this.pos.x - this.spawndir][y] == 3 + team) {
             field[this.pos.x - this.spawndir][y] = 0;
+            update_blocks.push([this.pos.x - this.spawndir, y]);
           }
         }
       }
@@ -56,13 +59,16 @@ function Bup(team) {
     // calculates new position
     curposx = Math.round(this.pos.x);
     curposy = Math.round(this.pos.y)
-    field[curposx][curposy] = 0;
     if (field[curposx][curposy + 1] != 0 && this.vel.x == 0 && this.vel.y == 0
         && this.acc.x == 0 && this.acc.y == 0) {
           // if we are on the ground and don't have any velocity, we might as
           // well break to save on resources
           return;
         }
+    field[curposx][curposy] = 0;
+    update_blocks.push([curposx, curposy]);
+    // if we're past the not-moving check, it means... we are moving
+    // therefore the field needs to be updated
     this.acc.add(this.gravity);
     this.vel.add(this.acc);
     for (i = 0; i < precision; i++) {
@@ -85,5 +91,6 @@ function Bup(team) {
 
   this.show = function() {
     field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 5 + team;
+    update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
   }
 }
