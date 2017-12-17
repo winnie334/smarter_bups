@@ -8,26 +8,27 @@ function Bup(team) {
   let precision = 10;
 
   this.spawnanimation = function() {
+    console.log(world.field)
     this.pos.x += this.spawndir;
     if (this.pos.x < 0 || this.pos.x > size_x - 1) {
       this.pos.x -= this.spawndir;
       for (y = 0; y < size_y; y++) {
-        if (field[this.pos.x][y] == 3 + team) {
-          field[this.pos.x][y] = 0;
+        if (world.field[this.pos.x][y] == 3 + team) {
+          world.field[this.pos.x][y] = 0;
           update_blocks.push([this.pos.x, y]);
         }
       }
       this.hasspawned = 1;
     } else {
       for (y = 0; y < size_y; y++) {
-        if (field[this.pos.x][y] == 0) {
-          field[this.pos.x][y] = 3 + team;
+        if (world.field[this.pos.x][y] == 0) {
+          world.field[this.pos.x][y] = 3 + team;
           update_blocks.push([this.pos.x, y]);
         }
 
         if (this.pos.x > -1 && this.pos.x < size_x + this.spawndir) {
-          if (field[this.pos.x - this.spawndir][y] == 3 + team) {
-            field[this.pos.x - this.spawndir][y] = 0;
+          if (world.field[this.pos.x - this.spawndir][y] == 3 + team) {
+            world.field[this.pos.x - this.spawndir][y] = 0;
             update_blocks.push([this.pos.x - this.spawndir, y]);
           }
         }
@@ -59,13 +60,13 @@ function Bup(team) {
     // calculates new position
     curposx = Math.round(this.pos.x);
     curposy = Math.round(this.pos.y)
-    if (field[curposx][curposy + 1] != 0 && this.vel.x == 0 && this.vel.y == 0
+    if (world.field[curposx][curposy + 1] != 0 && this.vel.x == 0 && this.vel.y == 0
         && this.acc.x == 0 && this.acc.y == 0) {
           // if we are on the ground and don't have any velocity, we might as
           // well break to save on resources
           return;
         }
-    field[curposx][curposy] = 0;
+    world.field[curposx][curposy] = 0;
     update_blocks.push([curposx, curposy]);
     // if we're past the not-moving check, it means... we are moving
     // therefore the field needs to be updated
@@ -80,7 +81,7 @@ function Bup(team) {
       newposy = Math.round(this.pos.y);
       if (newposx < 0 || newposx >= size_x ||
           newposy < 0 || newposy >= size_y ||  // eh
-          field[newposx][newposy] < 3 && field[newposx][newposy] != 0) {
+          world.field[newposx][newposy] < 3 && world.field[newposx][newposy] != 0) {
         this.pos.sub(this.vel.x / precision, this.vel.y / precision);
         this.vel.mult(0); // we hit something, we lose all our velocity
         break;
@@ -90,7 +91,7 @@ function Bup(team) {
   }
 
   this.show = function() {
-    field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 5 + team;
+    world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 5 + team;
     update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
   }
 }
