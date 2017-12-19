@@ -1,5 +1,6 @@
 function World() {
   this.field = [];
+  this.projectile_list = []; // list of all projectiles currently flying
 
   this.initfield = function(size_x, size_y) {
     // makes a field [matrix] of numbers. Each number represents a type of block
@@ -8,6 +9,7 @@ function World() {
     // 2 is grass
     // 3 and 4 is red and blue beam
     // 5 and 6 is red and blue bup
+    // 7 is a projectile
     for (x = 0; x < size_x; x++) {
       var column = [];
       for (y = 0; y < size_y; y++) {
@@ -126,6 +128,9 @@ function World() {
     }
     else if (this.field[x][y] == 6) {
       fill(65, 111, 240);
+    }
+    else if (this.field[x][y] == 7) {
+      fill(0, 0, 0);
     }
     rect(x * blocksize, y * blocksize, blocksize, blocksize);
   }

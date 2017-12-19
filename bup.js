@@ -8,7 +8,6 @@ function Bup(team) {
   let precision = 10;
 
   this.spawnanimation = function() {
-    console.log(world.field)
     this.pos.x += this.spawndir;
     if (this.pos.x < 0 || this.pos.x > size_x - 1) {
       this.pos.x -= this.spawndir;
