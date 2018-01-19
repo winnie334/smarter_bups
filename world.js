@@ -109,28 +109,36 @@ function World() {
 
   this.update_block = function(x, y) {
     if (this.field[x][y] == 0) {
+      // air
       fill(65, 200, 240);
     }
     else if (this.field[x][y] == 1) {
+      // ground
         fill(map(y, 0, size_y, 70, 20), map(y, 0, size_y, 40, 10), 10);
     }
     else if (this.field[x][y] == 2) {
+      // grass
       fill(25, 125, 25);
     }
     else if (this.field[x][y] == 3) {
-      fill(240, 85, 100, 150);
+      // red spawn beam
+      fill(200, 20, 20, 150);
     }
     else if (this.field[x][y] == 4) {
+      // blue spawn beam
       fill(65, 111, 240, 500);
     }
     else if (this.field[x][y] == 5) {
-      fill(240, 65, 80);
+      // red bup
+      fill(200, 20, 20);
     }
     else if (this.field[x][y] == 6) {
+      // blue bup
       fill(65, 111, 240);
     }
     else if (this.field[x][y] == 7) {
-      fill(0, 0, 0);
+      // projectile
+      fill(250, 160, 70);
     }
     rect(x * blocksize, y * blocksize, blocksize, blocksize);
   }

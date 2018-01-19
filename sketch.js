@@ -1,12 +1,12 @@
-let size_x = 80;
-let size_y = 50;
+let size_x = 200;
+let size_y = 80;
 var blocksize;
 var update_blocks = []; // blocks that need to be updated
 var world;
 
 function setup() {
-  createCanvas(1400, 700);
-  strokeWeight(0);
+  createCanvas(1400, 900);
+  noStroke();
   blocksize = Math.min(height / size_y, width / size_x);
   world = new World();
   world.initfield(size_x, size_y);
@@ -15,12 +15,14 @@ function setup() {
   bup2 = new Bup(0);
 }
 
-
+function windowResized() {
+	resizeCanvas(windowWidth, windowHeight);
+}
 
 function draw() {
   bup1.update();
   bup2.update();
-  for (let projectile of world.projectile_list) {
+ for (let projectile of world.projectile_list) {
     projectile.update();
   }
   world.update_field();
