@@ -1,11 +1,11 @@
-let size_x = 200;
-let size_y = 80;
+let size_x = 100;
+let size_y = 60;
 var blocksize;
 var update_blocks = []; // blocks that need to be updated
 var world;
 
 function setup() {
-  createCanvas(1400, 900);
+  createCanvas(1200, 900);
   noStroke();
   blocksize = Math.min(height / size_y, width / size_x);
   world = new World();

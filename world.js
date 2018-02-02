@@ -1,6 +1,6 @@
 function World() {
   this.field = [];
-  this.projectile_list = []; // list of all projectiles currently flying
+  this.projectile_list = []; // list of all projectiles and explosions
 
   this.initfield = function(size_x, size_y) {
     // makes a field [matrix] of numbers. Each number represents a type of block
@@ -138,7 +138,12 @@ function World() {
     }
     else if (this.field[x][y] == 7) {
       // projectile
-      fill(250, 160, 70);
+      fill(250, 160, 80);
+    }
+    else if (this.field[x][y] < 0) {
+      // explosion
+      color = map(-this.field[x][y], 1, 5, 80, 200);
+      fill(244, color, 66);
     }
     rect(x * blocksize, y * blocksize, blocksize, blocksize);
   }
@@ -151,4 +156,12 @@ function World() {
       update_blocks = [];
     }
   }
+
+  this.inbounds = function(x, y) {
+    if (x >= 0 && y >= 0 && x < size_x && y < size_y - 1) {
+      return true;
+    }
+    return false;
+  }
+
 }
