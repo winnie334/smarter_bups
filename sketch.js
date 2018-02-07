@@ -3,6 +3,7 @@ let size_y = 60;
 var blocksize;
 var update_blocks = []; // blocks that need to be updated
 var world;
+var population;
 
 function setup() {
   createCanvas(1200, 900);
@@ -11,17 +12,14 @@ function setup() {
   world = new World();
   world.initfield(size_x, size_y);
   world.drawfield();
-  bup1 = new Bup(1);
-  bup2 = new Bup(0);
-}
-
-function windowResized() {
-	resizeCanvas(windowWidth, windowHeight);
+  population = new Population(1);
 }
 
 function draw() {
-  bup1.update();
-  bup2.update();
+ population.run();
+ population.redbups[population.cur].update();
+ population.bluebups[population.cur].update();
+
  for (let projectile of world.projectile_list) {
     projectile.update();
   }
@@ -29,7 +27,10 @@ function draw() {
 }
 
 function mousePressed() {
-  new Projectile(bup1.pos.x + 1, bup1.pos.y - 1, createVector(0.5, -0.5));
-  bup1.jump(0.5, -0.7);
-  bup2.jump(-0.5, -0.7);
+
+}
+
+function windowResized() {
+	resizeCanvas(windowWidth, windowHeight);
+  world.drawfield(); // redraw, since not everything updates every frame
 }

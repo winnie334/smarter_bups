@@ -142,7 +142,7 @@ function World() {
     }
     else if (this.field[x][y] < 0) {
       // explosion
-      color = map(-this.field[x][y], 1, 5, 80, 200);
+      color = map(-this.field[x][y], 1, 6, 80, 200);
       fill(244, color, 66);
     }
     rect(x * blocksize, y * blocksize, blocksize, blocksize);
@@ -162,6 +162,14 @@ function World() {
       return true;
     }
     return false;
+  }
+
+  this.quiet = function() {
+    // is the world quiet? as in, is there anything going on?
+    if (this.projectile_list.length > 0) {
+      return false;
+    }
+    return true;
   }
 
 }
