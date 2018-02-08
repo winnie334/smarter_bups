@@ -1,7 +1,7 @@
 function Projectile(startx, starty, acc) {
   this.pos = createVector(startx, starty);
   this.vel = createVector();
-  this.acc = acc; // already a vector
+  this.acc = acc // already a vector
   this.gravity = createVector(0, 0.02);
   let precision = 20;
   world.projectile_list.push(this);

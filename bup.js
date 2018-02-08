@@ -1,9 +1,10 @@
 function Bup(team, dna) {
-  // if (dna) {
-  //   this.dna = dna;
-  // } else {
-  //   this.dna = new DNA;
-  // }
+  if (dna) {
+    this.dna = dna;
+  } else {
+    this.dna = new DNA;
+  }
+  this.cur = 0; // what move we are currently doing (position in dna)
   this.hasspawned = 0;
   this.spawndir = -2 * team + 1;
   this.hp = 100;
@@ -54,13 +55,19 @@ function Bup(team, dna) {
 
   this.turn = function() {
     // doesn't actually turn. Rather, "it's his turn"
-    // for now, it doesn't choose what it does yet
     //new Projectile(this.pos.x, this.pos.y, createVector(1, 1))
-    this.jump(0, -1.5)
+    if (this.dna.genes[this.cur][0]) {
+      // this move is a projectile
+      new Projectile(this.pos.x, this.pos.y, this.dna.genes[this.cur][1]);
+    } else {
+      // otherwise, we are jumping
+      this.jump(this.dna.genes[this.cur][1]);
+    }
+    this.cur += 1;
   }
 
-  this.jump = function(x, y) {
-    this.acc.add(x, y);
+  this.jump = function(direction) {
+    this.acc.add(direction); // direction is a vector already
   }
 
   this.calculate = function() {

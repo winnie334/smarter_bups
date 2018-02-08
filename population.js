@@ -6,11 +6,11 @@ function Population(size) {
   this.cur = 0; // what pair we are currently running
   this.redblue = 0; // 0 if currently red, 1 if currently blue
   this.done = 0;
-
   for (i = 0; i < this.size; i++) {
-    this.redbups[i] = new Bup(0);
-    this.bluebups[i] = new Bup(1);
+    this.redbups.push(new Bup(0));
+    this.bluebups.push(new Bup(1));
   }
+
 
   this.run = function() {
     // if nothing is happening, let a bup do something
@@ -32,8 +32,12 @@ function Population(size) {
   }
 
   this.evaluate = function() {
+    // gives each bup a "score", which is then used as a chance to be in the
+    // next generation. The higher your score, the better the odds
     this.maxfit = [0, 0];
     for (i = 0; i < this.size; i++) {
+      // the fitness is their health compared to the other's health
+      // 100 is added to ensure there's no negative numbers
       this.redbups[i].fitness = this.redbups[i].hp - this.bluebups[i].hp + 100;
       this.bluebups[i].fitness = this.bluebups[i].hp - this.redbups[i].hp + 100;
       if (this.redbups[i].fitness > this.maxfit[0]) {
@@ -62,4 +66,28 @@ function Population(size) {
       }
     }
   }
+
+  this.selection = function() {
+    // makes a new population, based on the previous one
+    redlings = []
+    for (i = 0; i < redbups.length; i++) {
+      parentA = random(this.matingpool[0]).dna;
+      parentB = random(this.matingpool[0]).dna;
+      child = parentA.crossover(parentB);
+      child.mutation();
+      redlings[i] = new Bup(0, child);
+    }
+    this.redbups = redlings;
+
+    bluelings = []
+    for (i = 0; i < bluebups.length; i++) {
+      parentA = random(this.matingpool[1]).dna;
+      parentB = random(this.matingpool[1]).dna;
+      child = parentA.crossover(parentB);
+      child.mutation();
+      bluelings[i] = new Bup(1, child);
+    }
+    this.bluebups = bluelings;
+  }
+
 }
