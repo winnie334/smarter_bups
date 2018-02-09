@@ -5,7 +5,7 @@ function DNA(genes) {
   // both need a "direction", these will be the second and third values
 
   this.maxturns = 20; // max amount of turns one dna object stores
-  this.mag = 1.5; // the max magnetude of a move, higher means more power per bup
+  this.mag = 1; // the max magnetude of a move, higher means more power per bup
   this.mutationrate = 0.05;
 
   if (genes) {

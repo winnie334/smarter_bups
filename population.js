@@ -5,30 +5,38 @@ function Population(size) {
   this.size = size; // how many bups are in each team
   this.cur = 0; // what pair we are currently running
   this.redblue = 0; // 0 if currently red, 1 if currently blue
-  this.done = 0;
-  for (i = 0; i < this.size; i++) {
+  this.done = 0; // a pair is completely evaluated
+  this.fulldone = 0; // an entire generation is evaluated
+  for (var i = 0; i < this.size; i++) {
     this.redbups.push(new Bup(0));
     this.bluebups.push(new Bup(1));
   }
 
 
   this.run = function() {
+    // a "tick" of the world
+    if (this.redbups[this.cur].hp <= 0 || this.bluebups[this.cur].hp <= 0) {
+      // if one of the bups is dead, move on to the next pair or population
+      console.log("someone died")
+      this.cur += 1;
+      this.redblue = 0;
+      this.done = 1;
+      if (this.cur >= this.size) {
+        this.fulldone = 1;
+      }
+    }
     // if nothing is happening, let a bup do something
-    if (!this.redblue && this.bluebups[this.cur].rest && world.quiet()) {
+    else if (!this.redblue && world.quiet()) {
+      console.log("red move")
       // if it's red's turn, and blue is currently not moving
           this.redbups[this.cur].turn();
           this.redblue = 1;
-    } else if (this.redblue && this.redbups[this.cur].rest && world.quiet()) {
+    } else if (this.redblue && world.quiet()) {
+      console.log("blue move")
           this.bluebups[this.cur].turn();
           this.redblue = 0;
     }
-    if (this.redbups[this.cur].hp <= 0 || this.bluebups[this.cur].hp <= 0) {
-      // if one of the bups is dead, move on to the next pair or population
-      this.cur += 1;
-      if (this.cur >= this.size) {
-        this.done = 1;
-      }
-    }
+
   }
 
   this.evaluate = function() {
@@ -70,7 +78,7 @@ function Population(size) {
   this.selection = function() {
     // makes a new population, based on the previous one
     redlings = []
-    for (i = 0; i < redbups.length; i++) {
+    for (i = 0; i < this.redbups.length; i++) {
       parentA = random(this.matingpool[0]).dna;
       parentB = random(this.matingpool[0]).dna;
       child = parentA.crossover(parentB);
@@ -80,7 +88,7 @@ function Population(size) {
     this.redbups = redlings;
 
     bluelings = []
-    for (i = 0; i < bluebups.length; i++) {
+    for (i = 0; i < this.bluebups.length; i++) {
       parentA = random(this.matingpool[1]).dna;
       parentB = random(this.matingpool[1]).dna;
       child = parentA.crossover(parentB);

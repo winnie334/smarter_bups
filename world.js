@@ -1,6 +1,7 @@
 function World() {
   this.field = [];
   this.projectile_list = []; // list of all projectiles and explosions
+  this.backupfield = [];
 
   this.initfield = function(size_x, size_y) {
     // makes a field [matrix] of numbers. Each number represents a type of block
@@ -169,7 +170,26 @@ function World() {
     if (this.projectile_list.length > 0) {
       return false;
     }
+    if (!population.redbups[population.cur].rest ||
+        !population.bluebups[population.cur].rest) {
+      return false;
+    }
     return true;
+  }
+
+  this.backup = function() {
+    for (var i = 0; i < this.field.length; i++) {
+      this.backupfield[i] = this.field[i].slice();
+    }
+  }
+
+  this.restore = function() {
+    // restores a backup (we assume we have one)
+    // we need to use a listed slice since we want to copy by value
+    for (var i = 0; i < this.backupfield.length; i++) {
+      this.field[i] = this.backupfield[i].slice();
+    }
+    this.drawfield();
   }
 
 }

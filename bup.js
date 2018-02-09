@@ -70,12 +70,20 @@ function Bup(team, dna) {
     this.acc.add(direction); // direction is a vector already
   }
 
+  this.onground = function() {
+    if (world.field[curposx][curposy + 1] == 1 ||
+        world.field[curposx][curposy + 1] == 2) { // if we are on grass or ground
+      return true;
+    }
+    return false;
+  }
+
   this.calculate = function() {
     // calculates new position
     curposx = Math.round(this.pos.x);
     curposy = Math.round(this.pos.y)
-    if (world.field[curposx][curposy + 1] != 0 && this.vel.x == 0 &&
-        this.vel.y == 0 && this.acc.x == 0 && this.acc.y == 0) {
+    if (this.onground() && this.vel.x == 0 && this.vel.y == 0
+        && this.acc.x == 0 && this.acc.y == 0) {
           // if we are on the ground and don't have any velocity, we might as
           // well break to save on resources
           this.rest = 1;
@@ -111,13 +119,7 @@ function Bup(team, dna) {
     if (this.hp > 0) {
       world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 5 + team;
       update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
-    } else {
-      this.remove()
     }
-  }
-
-  this.remove = function() {
-    console.log("removed");
   }
 
 }
