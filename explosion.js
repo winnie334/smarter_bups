@@ -23,8 +23,14 @@ function Explosion(x, y, size) {
         if (dis <= this.timer && world.inbounds(nx, ny - 1)) {
           if (this.timer >= this.size) {
             world.field[nx][ny] = 0;
-          }
-          else if (world.field[nx][ny] >= 0) {
+          } else if (world.field[nx][ny] >= 0) {
+            // if this spot isn't an explosion yet (value under 0), we make it -1
+            // we need to check if it's a bup though
+            if (world.field[nx][ny] == 5) {
+              population.redbups[population.cur].damage(5);
+            } else if (world.field[nx][ny] == 6) {
+              population.bluebups[population.cur].damage(5);
+            }
             world.field[nx][ny] = -1;
           } else {
             world.field[nx][ny] -= 1;

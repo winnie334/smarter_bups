@@ -13,25 +13,12 @@ function setup() {
   world.initfield(size_x, size_y);
   world.drawfield();
   world.backup(); // we save this map, so we can recover it at any time
-  population = new Population(5);
+  population = new Population(10);
 }
 
 function draw() {
  population.run();
- if (!population.done) {
-   population.redbups[population.cur].update();
-   population.bluebups[population.cur].update();
- } else {
-   // a pair has been evaluated, we need to reset the world
-   world.restore();
-   population.done = 0;
-   if (population.fulldone) {
-     // the entire generation has been evaluated, we need to make a new one
-     population.evaluate();
-     population.selection();
-     population.fulldone = 0;
-   }
- }
+ population.check();
 
  for (let projectile of world.projectile_list) {
     projectile.update();

@@ -81,11 +81,12 @@ function Bup(team, dna) {
   this.calculate = function() {
     // calculates new position
     curposx = Math.round(this.pos.x);
-    curposy = Math.round(this.pos.y)
-    if (this.onground() && this.vel.x == 0 && this.vel.y == 0
-        && this.acc.x == 0 && this.acc.y == 0) {
-          // if we are on the ground and don't have any velocity, we might as
-          // well break to save on resources
+    curposy = Math.round(this.pos.y);
+    if (!world.inbounds(curposx, curposy) ||
+       (this.onground() && this.vel.x == 0 && this.vel.y == 0
+        && this.acc.x == 0 && this.acc.y == 0)) {
+          // if we are on the ground and not moving, or we are out of the map,
+          // we break to save some precious computer power
           this.rest = 1;
           return;
         }
@@ -120,6 +121,12 @@ function Bup(team, dna) {
       world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 5 + team;
       update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
     }
+  }
+
+  this.damage = function(damage) {
+    // changes the hp (assumed positive for damage)
+    this.hp -= damage;
+    console.log(this.hp);
   }
 
 }
