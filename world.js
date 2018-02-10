@@ -38,7 +38,7 @@ function World() {
       }
       this.field.push(column);
     }
-    for (i = 0; i < 5; i++) {
+    for (var i = 0; i < 5; i++) {
       this.removepeaks();
       this.removecorners();
     }
@@ -109,13 +109,14 @@ function World() {
   }
 
   this.update_block = function(x, y) {
+    if (fastmode) {return;}
     if (this.field[x][y] == 0) {
       // air
       fill(65, 200, 240);
     }
     else if (this.field[x][y] == 1) {
       // ground
-        fill(map(y, 0, size_y, 70, 20), map(y, 0, size_y, 40, 10), 10);
+      fill(map(y, 0, size_y, 70, 20), map(y, 0, size_y, 40, 10), 10);
     }
     else if (this.field[x][y] == 2) {
       // grass
@@ -151,7 +152,7 @@ function World() {
 
   this.update_field = function() {
     if (update_blocks.length > 0) {
-      for (i = 0; i < update_blocks.length; i++) {
+      for (var i = 0; i < update_blocks.length; i++) {
         this.update_block(update_blocks[i][0], update_blocks[i][1]);
       }
       update_blocks = [];

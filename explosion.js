@@ -5,8 +5,9 @@ function Explosion(x, y, size) {
   world.projectile_list.push(this);
 
   this.update = function() {
-    this.timer += 1 / this.size;
-    this.explode();
+    this.timer += 0.2;
+    // we don't want to explode further every frame, this fixes that
+    if (this.timer % 1 < 0.4) {this.explode()}
     if (this.timer > this.size) {
       world.projectile_list.splice(world.projectile_list.indexOf(this), 1);
     }

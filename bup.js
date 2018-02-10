@@ -7,6 +7,7 @@ function Bup(team, dna) {
   this.cur = 0; // what move we are currently doing (position in dna)
   this.hasspawned = 0;
   this.spawndir = -2 * team + 1;
+  this.color = (team ? "blue" : "red");
   this.hp = 100;
   this.rest = 0;
   this.pos = createVector(team * size_x, 1);
@@ -97,7 +98,7 @@ function Bup(team, dna) {
     this.rest = 0;
     this.acc.add(this.gravity);
     this.vel.add(this.acc);
-    for (i = 0; i < precision; i++) {
+    for (var i = 0; i < precision; i++) {
       // let's try something hacky
       // instead of adding all the velocity and hoping we're not glitching
       // through, we add bit by bit and substract again if we collide
@@ -126,7 +127,6 @@ function Bup(team, dna) {
   this.damage = function(damage) {
     // changes the hp (assumed positive for damage)
     this.hp -= damage;
-    console.log(this.hp);
   }
 
 }
