@@ -14,23 +14,25 @@ function Projectile(startx, starty, acc) {
   this.calculate = function() {
     // calculates new position
     // first we remove ourselves
-    world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 0;
-    update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
+    if (world.inbounds(Math.round(this.pos.x), Math.round(this.pos.y))) {
+      world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 0;
+      update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
+    } else {
+      this.remove();
+    }
 
     this.acc.add(this.gravity);
     this.vel.add(this.acc);
     for (var i = 0; i < precision; i++) {
       // let's try something hacky
       // instead of adding all the velocity and hoping we're not glitching
-      // through, we add bit by bit and substract again if we collide
+      // through, we add bit by bit and substract again if w collide
       this.pos.add(this.vel.x / precision, this.vel.y / precision);
       newposx = Math.round(this.pos.x);
       newposy = Math.round(this.pos.y);
-      if (newposx < 0 || newposx >= size_x || newposy < 0 || newposy >= size_y) {
+      if (!world.inbounds(newposx, newposy)) {
         // we hit the sides, we need to remove ourselves
         this.pos.sub(this.vel.x / precision, this.vel.y / precision);
-        world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 0;
-        update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
         this.remove();
         break;
       } else if (world.field[newposx][newposy] != 0) {
@@ -42,8 +44,10 @@ function Projectile(startx, starty, acc) {
   }
 
   this.show = function() {
-    world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 7;
-    update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
+    if (world.inbounds(Math.round(this.pos.x), Math.round(this.pos.y))) {
+      world.field[Math.round(this.pos.x)][Math.round(this.pos.y)] = 7;
+      update_blocks.push([Math.round(this.pos.x), Math.round(this.pos.y)]);
+    }
   }
 
   this.explode = function() {

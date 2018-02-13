@@ -190,6 +190,7 @@ function World() {
     for (var i = 0; i < this.backupfield.length; i++) {
       this.field[i] = this.backupfield[i].slice();
     }
+    this.projectile_list = [];
     this.drawfield();
   }
 

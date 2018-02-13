@@ -106,8 +106,9 @@ function Bup(team, dna) {
       newposx = Math.round(this.pos.x);
       newposy = Math.round(this.pos.y);
       if (!world.inbounds(newposx, newposy)) {
-            this.hp = 0;
-            break;
+        console.log(this.color + " jumped out of bounds")
+        this.hp = 0;
+        break;
       } else if (world.field[newposx][newposy] < 3 && world.field[newposx][newposy] != 0) {
         this.pos.sub(this.vel.x / precision, this.vel.y / precision);
         this.vel.mult(0); // we hit something, we lose all our velocity
@@ -127,6 +128,9 @@ function Bup(team, dna) {
   this.damage = function(damage) {
     // changes the hp (assumed positive for damage)
     this.hp -= damage;
+    if (this.hp <= 0) {
+      console.log(this.color + " died on turn " + this.cur);
+    }
   }
 
 }

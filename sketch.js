@@ -14,7 +14,7 @@ function setup() {
   world.initfield(size_x, size_y);
   world.drawfield();
   world.backup(); // we save this map, so we can recover it at any time
-  population = new Population(5);
+  population = new Population(10);
 }
 
 function draw() {
