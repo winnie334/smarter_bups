@@ -24,8 +24,9 @@ function World() {
           // if that's not the case, we need to check if we're in the first column
           // and put a block at the middle height
           column.push(1);
-        } else if (x != 0 && y < size_y - 2 && this.field[x - 1][y + 2] == 1
-                   && Math.random() > 0.7) {
+        } else if (x != 0 && y < size_y - 2 && 
+                  ((this.field[x - 1][y+1] == 1 && Math.random() > 0.65) ||
+                  (this.field[x - 1][y] == 1 && Math.random() > 0.7))) {
           // now we check if there's land at about the same height nearby
           column.push(1);
         } else if (y > size_y - 4 && Math.random() > 0.1) {
@@ -136,7 +137,7 @@ function World() {
     }
     else if (this.field[x][y] == 6) {
       // blue bup
-      fill(65, 111, 240);
+      fill(51, 94, 214);
     }
     else if (this.field[x][y] == 7) {
       // projectile

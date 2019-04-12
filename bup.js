@@ -19,7 +19,7 @@ function Bup(team, dna) {
 
   this.spawnanimation = function() {
     this.pos.x += this.spawndir;
-    if (this.pos.x < 0 || this.pos.x > size_x - 1) {
+    if (this.pos.x < -this.spawndir || this.pos.x > size_x - 1 - this.spawndir) {
       this.pos.x -= this.spawndir;
       for (y = 0; y < size_y; y++) {
         if (world.field[this.pos.x][y] == 3 + team) {
@@ -106,8 +106,8 @@ function Bup(team, dna) {
       newposx = Math.round(this.pos.x);
       newposy = Math.round(this.pos.y);
       if (!world.inbounds(newposx, newposy)) {
-        console.log(this.color + " jumped out of bounds")
         this.hp = 0;
+        this.rest = 1;
         break;
       } else if (world.field[newposx][newposy] < 3 && world.field[newposx][newposy] != 0) {
         this.pos.sub(this.vel.x / precision, this.vel.y / precision);
@@ -129,7 +129,7 @@ function Bup(team, dna) {
     // changes the hp (assumed positive for damage)
     this.hp -= damage;
     if (this.hp <= 0) {
-      console.log(this.color + " died on turn " + this.cur);
+      this.rest = 1;
     }
   }
 

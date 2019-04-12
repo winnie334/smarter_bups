@@ -6,7 +6,7 @@ function DNA(genes) {
 
   this.maxturns = 20; // max amount of turns one dna object stores
   this.mag = 1; // the max magnetude of a move, higher means more power per bup
-  this.mutationrate = 0.05;
+  this.mutationrate = 0.02;
 
   if (genes) {
     this.genes = genes; // if we've been given genes, we use that
@@ -21,25 +21,12 @@ function DNA(genes) {
     }
   }
 
-  // this.crossover = function(partner) {
-  //   // mixes the genes of this dna and the partner's
-  //   // basically, each move of the new genes is either from parent A or B
-  //   newgenes = [];
-  //   for (var i = 0; i < this.maxturns; i++) {
-  //     if (Math.random() > 0.5) {
-  //       newgenes[i] = this.genes[i];
-  //     } else {
-  //       newgenes[i] = partner.genes[i];
-  //     }
-  //   }
-  //   return new DNA(newgenes);
-  // }
-
   this.crossover = function(partner) {
+    // mixes the genes of this dna and the partner's
+    // basically, each move of the new genes is either from parent A or B
     var newgenes = [];
-    var mid = floor(random(this.genes.length))
-    for (var i = 0; i < this.genes.length; i++) {
-      if (i > mid) {
+    for (var i = 0; i < this.maxturns; i++) {
+      if (Math.random() > 0.5) {
         newgenes[i] = this.genes[i];
       } else {
         newgenes[i] = partner.genes[i];
@@ -47,6 +34,19 @@ function DNA(genes) {
     }
     return new DNA(newgenes);
   }
+
+  // this.crossover = function(partner) {
+  //   var newgenes = [];
+  //   var mid = floor(random(this.genes.length))
+  //   for (var i = 0; i < this.genes.length; i++) {
+  //     if (i > mid) {
+  //       newgenes[i] = this.genes[i];
+  //     } else {
+  //       newgenes[i] = partner.genes[i];
+  //     }
+  //   }
+  //   return new DNA(newgenes);
+  // }
 
   this.mutate = function() {
     // randomly changes the genes a bit, to allow new strategies

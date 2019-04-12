@@ -1,3 +1,5 @@
+var neat;
+
 let size_x = 100;
 let size_y = 60;
 var blocksize;
@@ -14,6 +16,7 @@ function setup() {
   world.initfield(size_x, size_y);
   world.drawfield();
   world.backup(); // we save this map, so we can recover it at any time
+  //initNeat();
   population = new Population(10);
 }
 
@@ -26,6 +29,20 @@ function draw() {
     }
   }
   world.update_field();
+}
+
+function initNeat() {
+  neat = new Neat(
+    2, 2, null,
+    { mutation: Methods.Mutation.ALL, //[Methods.Mutation.MOD_WEIGHT, Methods.Mutation.MOD_BIAS],
+      popsize: PLAYER_AMOUNT,
+      mutationRate: MUTATION_RATE,
+      elitism: ELITISM_AMOUNT,
+      network: new Architect.Random(
+        2, START_HIDDEN_SIZE, 2
+      )
+    }
+  )
 }
 
 function mousePressed() {

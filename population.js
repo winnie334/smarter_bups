@@ -25,8 +25,9 @@ function Population(size) {
 
   this.run = function() {
     // a "tick" of the world
-    if ((this.redbups[this.cur].cur >= DNA.maxturns - 1 ||
-         this.redbups[this.cur].cur >= DNA.maxturns - 1) && world.quiet()) {
+    maxturns = this.redbups[0].dna.maxturns
+    if ((this.redbups[this.cur].cur >= maxturns ||
+         this.redbups[this.cur].cur >= maxturns) && world.quiet()) {
       // if one of the bups is dead, move on to the next pair or population
       console.log("A bup survived till the end!");
       this.next();
@@ -40,11 +41,12 @@ function Population(size) {
     else if ((!this.redblue || this.bluebups[this.cur].hp <= 0) && world.quiet()) {
       // if it's red's turn, and blue is currently not moving
       this.redbups[this.cur].turn();
-      this.redblue = 1;
+      this.redblue = (this.bluebups[this.cur].hp > 0);
+      // only switch if the other bup is still alive
     }
     else if ((this.redblue || this.bluebups[this.cur].hp <= 0) && world.quiet()) {
       this.bluebups[this.cur].turn();
-      this.redblue = 0;
+      this.redblue = (this.redbups[this.cur].hp <= 0);
     }
 
   }
@@ -59,7 +61,7 @@ function Population(size) {
       // this.redbups[i].fitness = this.redbups[i].hp - this.bluebups[i].hp + 101;
       // this.bluebups[i].fitness = this.bluebups[i].hp - this.redbups[i].hp + 101;
       this.redbups[i].fitness += Math.pow(this.redbups[i].cur, 3); // surviving longer is better
-      this.bluebups[i].fitness += Math.pow(this.bluebups[i].cur, 3); // red is reference
+      this.bluebups[i].fitness += Math.pow(this.bluebups[i].cur, 3);
       if (this.redbups[i].fitness > this.maxfit[0]) {
         this.maxfit[0] = this.redbups[i].fitness;
       }
@@ -67,10 +69,10 @@ function Population(size) {
         this.maxfit[1] = this.bluebups[i].fitness;
       }
     }
-    for (var i = 0; i < this.redbups.length; i++) {
-        this.redbups[i].fitness /= this.maxfit[0];
-        this.bluebups[i].fitness /= this.maxfit[1];
-    }
+    // for (var i = 0; i < this.redbups.length; i++) {
+    //     this.redbups[i].fitness /= this.maxfit[0];
+    //     this.bluebups[i].fitness /= this.maxfit[1];
+    // }
     console.log("red maxfit: " + this.maxfit[0]);
     console.log("blue maxfit: " + this.maxfit[1]);
     // now let's make 2 matingpools, one for each team
@@ -117,9 +119,10 @@ function Population(size) {
   this.check = function() {
     // looks for potential "dones", meaning a pair or a generation is finished
     if (!this.done) {
-      if (this.redbups[this.cur].hp >= 0) {
+      if (this.redbups[this.cur].hp > 0) {
         this.redbups[this.cur].update();
-      } if (this.bluebups[this.cur].hp >= 0) {
+      }
+      if (this.bluebups[this.cur].hp > 0) {
         this.bluebups[this.cur].update();
       }
     } else {
