@@ -1,3 +1,5 @@
+/// <reference path="./p5.global-mode.d.ts" />
+
 var neat;
 
 let size_x = 100;
@@ -16,8 +18,9 @@ function setup() {
   world.initfield(size_x, size_y);
   world.drawfield();
   world.backup(); // we save this map, so we can recover it at any time
-  //initNeat();
-  population = new Population(10);
+  population = new Population();
+  initNeat();
+  startEvaluation();
 }
 
 function draw() {
@@ -29,20 +32,7 @@ function draw() {
     }
   }
   world.update_field();
-}
-
-function initNeat() {
-  neat = new Neat(
-    2, 2, null,
-    { mutation: Methods.Mutation.ALL, //[Methods.Mutation.MOD_WEIGHT, Methods.Mutation.MOD_BIAS],
-      popsize: PLAYER_AMOUNT,
-      mutationRate: MUTATION_RATE,
-      elitism: ELITISM_AMOUNT,
-      network: new Architect.Random(
-        2, START_HIDDEN_SIZE, 2
-      )
-    }
-  )
+  drawInterface();
 }
 
 function mousePressed() {
@@ -51,6 +41,5 @@ function mousePressed() {
 }
 
 function windowResized() {
-	resizeCanvas(windowWidth, windowHeight);
   world.drawfield(); // redraw, since not everything updates every frame
 }

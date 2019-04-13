@@ -3,8 +3,7 @@ MUTATION_RATE = 0.3;
 ELITISM_AMOUNT = 2;
 START_HIDDEN_SIZE = 2;
 
-START_X = 0;
-START_Y = 200;
+MAX_TURNS = 30;
 
 var Neat    = neataptic.Neat;
 var Methods = neataptic.Methods;
@@ -15,32 +14,35 @@ var Architect = neataptic.Architect;
 
 function initNeat() {
     neat = new Neat(
-        2, 2, null, {
-            mutation: Methods.Mutation.ALL, //[Methods.Mutation.MOD_WEIGHT, Methods.Mutation.MOD_BIAS],
+        2, 3, null, {
+            mutation: Methods.Mutation.ALL,
             popsize: PLAYER_AMOUNT,
             mutationRate: MUTATION_RATE,
             elitism: ELITISM_AMOUNT,
             network: new Architect.Random(
-                2, START_HIDDEN_SIZE, 2
+                2, START_HIDDEN_SIZE, 3
             )
         }
     )
 }
 
 function startEvaluation() {
-    blocks = [];
-
-    for (let genome of neat.population) {
-        new bup(genome);
+    newReds = [];
+    newBlues = [];
+    for (var i = 0; i < neat.population.length / 2; i++) {
+        newReds.push(new Bup(0, neat.population[2*i]))
+        newBlues.push(new Bup(1, neat.population[2*i+1]))
     }
-    terrain = generate_terrain();
+
+    population.redbups = newReds;
+    population.bluebups = newBlues;
 }
 
 function endEvaluation() {
     var output = "Generation " + neat.generation + " done! \t\t";
     output += "average score: " + neat.getAverage() + "\t\t";
     output += "Best: " + neat.getFittest().score;
-    if (!fastmode || neat.generation % 5 == 0) console.log(output);
+    console.log(output);
 
     neat.sort();
 

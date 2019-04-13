@@ -1,10 +1,6 @@
-function Bup(team, dna) {
-  if (dna) {
-    this.dna = dna;
-  } else {
-    this.dna = new DNA;
-  }
-  this.cur = 0; // what move we are currently doing (position in dna)
+function Bup(team, genome) {
+  this.brain = genome;
+  this.brain.score = 0;
   this.hasspawned = 0;
   this.spawndir = -2 * team + 1;
   this.color = (team ? "blue" : "red");
@@ -15,7 +11,6 @@ function Bup(team, dna) {
   this.acc = createVector();
   this.gravity = createVector(0, 0.05);
   let precision = 10;
-  this.fitness = 0;
 
   this.spawnanimation = function() {
     this.pos.x += this.spawndir;
@@ -57,18 +52,33 @@ function Bup(team, dna) {
   this.turn = function() {
     // doesn't actually turn. Rather, "it's his turn"
     //new Projectile(this.pos.x, this.pos.y, createVector(1, 1))
-    if (this.dna.genes[this.cur][0]) {
+
+    var input = this.get_input();
+    var output = this.brain.activate(input);
+    output[1] = (output[1] - 0.5) * 2;
+    output[2] = (output[2] - 0.5) * 2;
+
+    if (Math.round(output[0])) {
       // this move is a projectile
-      new Projectile(this.pos.x, this.pos.y, this.dna.genes[this.cur][1]);
+      new Projectile(this.pos.x, this.pos.y, output[1], output[2]);
     } else {
       // otherwise, we are jumping
-      this.jump(this.dna.genes[this.cur][1]);
+      this.jump(output[1], output[2]);
     }
     this.cur += 1;
   }
 
-  this.jump = function(direction) {
-    this.acc.add(direction); // direction is a vector already
+  this.get_input = function() {
+    // Returns a few input variables for our neat to work with.
+    // For now, it returns the horizontal and vertical distance to the other bup.
+    var otherBup = this.color == "red" ? population.bluebups[population.cur] : population.redbups[population.cur];
+    var dist_x = this.pos.x - otherBup.pos.x;
+    var dist_y = this.pos.y - otherBup.pos.y;
+    return [dist_x/100, dist_y/60];
+  }
+
+  this.jump = function(dirx, diry) {
+    this.acc.add(createVector(dirx, diry)); // direction is a vector already
   }
 
   this.onground = function() {
