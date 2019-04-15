@@ -11,12 +11,12 @@ function Population() {
     // small help function to go to the next pair of bups
 
     // first we give a score to the bups that just finished
-    this.redbups[this.cur].brain.score = this.redbups[this.cur].hp - this.bluebups[this.cur].hp + this.cur * 5;
-    this.bluebups[this.cur].brain.score = this.bluebups[this.cur].hp - this.redbups[this.cur].hp + this.cur * 5;
-
+    oldred = this.redbups[this.cur];
+    oldblue = this.bluebups[this.cur]
+    oldred.brain.score += (Math.abs(oldred.pos.x - size_x/2))/10;
+    oldblue.brain.score += (size_x/2 - Math.abs(oldblue.pos.x - size_x/2))/10;
     // then we upate all variables for the next pair
     this.cur += 1;
-    console.log("evaluating pair ", this.cur)
     this.redblue = 0;
     this.turns = 0;
     this.done = 1;
@@ -30,10 +30,8 @@ function Population() {
     if (!world.quiet()) return;
     if ((this.turns >= MAX_TURNS)) {
       // if one of the bups is dead, move on to the next pair or population
-      console.log("max turns reached")
       this.next();
     } else if (this.redbups[this.cur].hp <= 0 || this.bluebups[this.cur].hp <= 0) {
-      console.log("one of the bups died")
       this.next();
     }
     // if nothing is happening or the other bup is dead, do something
@@ -72,6 +70,13 @@ function Population() {
         this.cur = 0;
       }
     }
+  }
+
+  this.bupDamaged = function(shooter, target) {
+    // When an explosion hits a bup, this function is called.
+    // We reward positively for hitting the enemy team, negative for hitting yourself.
+    if (shooter == "red") this.redbups[this.cur].brain.score += 5 * (target == "red" ? -1 : 2);
+    if (shooter == "blue") this.bluebups[this.cur].brain.score += 5 * (target == "blue" ? -1 : 2); 
   }
 
 }

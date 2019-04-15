@@ -1,10 +1,12 @@
+MAX_HP = 100;
+
 function Bup(team, genome) {
   this.brain = genome;
   this.brain.score = 0;
   this.hasspawned = 0;
   this.spawndir = -2 * team + 1;
   this.color = (team ? "blue" : "red");
-  this.hp = 100;
+  this.hp = MAX_HP;
   this.rest = 0;
   this.pos = createVector(team * size_x, 1);
   this.vel = createVector();
@@ -51,19 +53,19 @@ function Bup(team, genome) {
 
   this.turn = function() {
     // doesn't actually turn. Rather, "it's his turn"
-    //new Projectile(this.pos.x, this.pos.y, createVector(1, 1))
 
     var input = this.get_input();
     var output = this.brain.activate(input);
-    output[1] = (output[1] - 0.5) * 2;
-    output[2] = (output[2] - 0.5) * 2;
+    output[1] -= 0.5;
+    output[2] -= 0.5;
 
     if (Math.round(output[0])) {
       // this move is a projectile
-      new Projectile(this.pos.x, this.pos.y, output[1], output[2]);
+      this.brain.score += 1;
+      new Projectile(this.pos.x, this.pos.y, createVector(output[1], output[2]).normalize(), this.color);
     } else {
       // otherwise, we are jumping
-      this.jump(output[1], output[2]);
+      this.jump(createVector(output[1], output[2]).normalize());
     }
     this.cur += 1;
   }
@@ -72,13 +74,18 @@ function Bup(team, genome) {
     // Returns a few input variables for our neat to work with.
     // For now, it returns the horizontal and vertical distance to the other bup.
     var otherBup = this.color == "red" ? population.bluebups[population.cur] : population.redbups[population.cur];
-    var dist_x = this.pos.x - otherBup.pos.x;
-    var dist_y = this.pos.y - otherBup.pos.y;
-    return [dist_x/100, dist_y/60];
+    var other_x = otherBup.pos.x / size_x;
+    var other_y = otherBup.pos.y / size_y;
+    var this_x = this.pos.x / size_x;
+    var this_y = this.pos.y / size_y;
+    var turn_counter = population.turns / MAX_TURNS;
+    var this_hp = this.hp / MAX_HP;
+    var other_hp = otherBup.hp / MAX_HP;
+    return [this_x, this_y, other_x, other_y, turn_counter, this_hp, other_hp];
   }
 
-  this.jump = function(dirx, diry) {
-    this.acc.add(createVector(dirx, diry)); // direction is a vector already
+  this.jump = function(direction) {
+    this.acc.add(direction); // direction is a vector already
   }
 
   this.onground = function() {
@@ -93,6 +100,7 @@ function Bup(team, genome) {
     // calculates new position
     curposx = Math.round(this.pos.x);
     curposy = Math.round(this.pos.y);
+    if (!world.inbounds(curposx, curposy)) this.hp = 0;
     if (!world.inbounds(curposx, curposy) ||
        (this.onground() && this.vel.x == 0 && this.vel.y == 0
         && this.acc.x == 0 && this.acc.y == 0)) {

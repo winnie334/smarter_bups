@@ -28,13 +28,13 @@ function drawHealth() {
     var hp = population.bluebups[population.cur].hp;
     fill(background_color);
     rect(10, 10, 100, 30);
-    fill(red_color);
+    fill(blue_color);
     rect(10, 10, hp, 30);
 
     var hp = population.redbups[population.cur].hp;
     fill(background_color);
     rect(width-110, 10, 100, 30);
-    fill(blue_color);
+    fill(red_color);
     rect(width-110+100-hp, 10, hp, 30);
 }
 

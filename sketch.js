@@ -1,11 +1,12 @@
 /// <reference path="./p5.global-mode.d.ts" />
 
-var neat;
+var neats;
+Config.warnings = false; // You know it's going to be good when you see this
 
 let size_x = 100;
 let size_y = 60;
 var blocksize;
-var update_blocks = []; // blocks that need to be updated
+var update_blocks = []; // blocks in the world that need to be updated
 var world;
 var population;
 var fastmode = 0;

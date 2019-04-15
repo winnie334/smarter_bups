@@ -1,7 +1,8 @@
-function Projectile(startx, starty, accx, accy) {
+function Projectile(startx, starty, direction, owner) {
   this.pos = createVector(startx, starty);
   this.vel = createVector();
-  this.acc = createVector(accx, accy);
+  this.acc = direction;
+  this.owner = owner;   // Either "red" or "blue", depending on who shot this projectile.
   this.gravity = createVector(0, 0.02);
   let precision = 20;
   world.projectile_list.push(this);
@@ -32,8 +33,8 @@ function Projectile(startx, starty, accx, accy) {
       newposy = Math.round(this.pos.y);
       if (!world.inbounds(newposx, newposy)) {
         // we hit the sides, we need to remove ourselves
-        this.pos.sub(this.vel.x / precision, this.vel.y / precision);
-        this.remove();
+        //this.pos.sub(this.vel.x / precision, this.vel.y / precision);
+        this.explode();
         break;
       } else if (world.field[newposx][newposy] != 0) {
         this.explode();
@@ -51,7 +52,7 @@ function Projectile(startx, starty, accx, accy) {
   }
 
   this.explode = function() {
-    new Explosion(this.pos.x, this.pos.y, 5);
+    new Explosion(this.pos.x, this.pos.y, 5, this.owner);
     this.remove();
   }
 
